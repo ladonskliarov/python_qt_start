@@ -1,54 +1,71 @@
-from PyQt5.QtWidgets import (QLabel, QApplication, QTextEdit, QListWidget,
-                            QPushButton, QLineEdit, QWidget, QHBoxLayout, QVBoxLayout)
+import json
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QListWidget, QLineEdit, QTextEdit, QInputDialog, \
+    QHBoxLayout, QVBoxLayout, QFormLayout
 
 app = QApplication([])
+notes = []
 
-window = QWidget()
-window.resize(600, 500)
-window.setWindowTitle("Розумні замітки")
+'''Інтерфейс'''
+# Параметри вікна
+notes_win = QWidget()
+notes_win.setWindowTitle('Розумні нотатки')
+notes_win.resize(900, 600)
 
-window.show()
-main_line = QHBoxLayout()
+# Віджети
+list_notes = QListWidget()
+list_notes_label = QLabel('Список нотаток')
 
-line1 = QVBoxLayout()
+button_note_create = QPushButton('Створити нотатку')
+button_note_del = QPushButton('Видалити нотатку')
+button_note_save = QPushButton('Зберегти нотатку')
 
-text = QTextEdit()
-list1 = QListWidget()
-list2 = QListWidget()
-list3 = QLineEdit()
-add_btn = QPushButton("Створити замітку")
-del_btn = QPushButton("Видалити замітку")
-save_btn = QPushButton("Зберегти замітку")
-line2 = QHBoxLayout()
-line2.addWidget(add_btn)
-line2.addWidget(del_btn)
+field_tag = QLineEdit('')
+field_tag.setPlaceholderText('Ввести тег...')
+field_text = QTextEdit()
+button_tag_add = QPushButton('Додати до нотатки')
+button_tag_del = QPushButton('Видалити з нотатки')
+button_tag_search = QPushButton('Шукати нотатки за тегом')
+list_tags = QListWidget()
+list_tags_label = QLabel('Список тегів')
 
-add_tag_btn = QPushButton("Додати до нотатки")
-del_tag_btn = QPushButton("Видалити з нотатки")
-search_tag_btn = QPushButton("Шукати за тегом")
-tag_line = QHBoxLayout()
-tag_line.addWidget(add_tag_btn)
-tag_line.addWidget(del_tag_btn)
+# Розмітки віджетів
+layout_notes = QHBoxLayout()
+col_1 = QVBoxLayout()
+col_1.addWidget(field_text)
 
-line1.addWidget(QLabel("Список заміток"))
-line1.addWidget(list1)
-line1.addLayout(line2)
-line1.addWidget(save_btn)
-line1.addWidget(QLabel("Список тегів"))
-line1.addWidget(list2)
-line1.addWidget(list3)
-line1.addLayout(tag_line)
-line1.addWidget(search_tag_btn)
-main_line.addWidget(text)
-main_line.addLayout(line1)
+col_2 = QVBoxLayout()
+col_2.addWidget(list_notes_label)
+col_2.addWidget(list_notes)
+row_1 = QHBoxLayout()
+row_1.addWidget(button_note_create)
+row_1.addWidget(button_note_del)
+row_2 = QHBoxLayout()
+row_2.addWidget(button_note_save)
+col_2.addLayout(row_1)
+col_2.addLayout(row_2)
 
-window.setLayout(main_line)
+col_2.addWidget(list_tags_label)
+col_2.addWidget(list_tags)
+col_2.addWidget(field_tag)
+row_3 = QHBoxLayout()
+row_3.addWidget(button_tag_add)
+row_3.addWidget(button_tag_del)
+row_4 = QHBoxLayout()
+row_4.addWidget(button_tag_search)
 
-app.exec()
+col_2.addLayout(row_3)
+col_2.addLayout(row_4)
 
-notes = {
-    "Назва замітки": {
-        "текст": "Дуже важливий текст заміткі",
-        "теги": ["чернетка", "думки"]
-    }
-}
+layout_notes.addLayout(col_1, stretch=2)
+layout_notes.addLayout(col_2, stretch=1)
+notes_win.setLayout(layout_notes)
+
+# Старт застосунку
+notes_win.show()
+
+# Додати всі з json до list_notes для подальшої роботи
+for note in notes:
+    list_notes.addItem(note['name'])
+
+app.exec_()
